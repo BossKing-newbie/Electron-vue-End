@@ -10,11 +10,16 @@ import java.io.Serializable;
  * @Description: User的实体类
  */
 public class User implements Serializable {
-    /*对应数据库的字段关系*/
+    /*对应数据库的字段关系
+    * userId:用户账号
+    * userPhone:用户联系电话
+    * userDescribe: 用户角色
+    * userIntegral: 用户积分*/
     private String userId;
     private String userPassword;
     private String userPhone;
     private String userDescribe;
+    private Integer userIntegral;
 
     public String getUserId() {
         return userId;
@@ -48,6 +53,14 @@ public class User implements Serializable {
         this.userDescribe = userDescribe;
     }
 
+    public Integer getUserIntegral() {
+        return userIntegral;
+    }
+
+    public void setUserIntegral(Integer userIntegral) {
+        this.userIntegral = userIntegral;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -55,6 +68,7 @@ public class User implements Serializable {
                 ", userPassword='" + userPassword + '\'' +
                 ", userPhone='" + userPhone + '\'' +
                 ", userDescribe='" + userDescribe + '\'' +
+                ", userIntegral=" + userIntegral +
                 '}';
     }
 }

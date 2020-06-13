@@ -1,7 +1,6 @@
 package com.fosu.software.delivery.service;
 
 import com.fosu.software.delivery.domain.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -20,4 +19,7 @@ public interface IUserService {
     public Object exitUser(String userId);
     /*注册用户，后续可能添加Spring security框架来进一步巩固数据安全性，敬请期待*/
     public Object userRegistration(User user);
+    /*用户登录：将表单传输的用户密码和用户Id,首先对用户Id进行匹配，如果匹配成功，则再进行匹配密码
+    * 如果匹配失败则直接返回错误信息*/
+    public Object login(String userId,String userPassword);
 }

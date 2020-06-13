@@ -22,6 +22,6 @@ public interface UserMapper {
     /*注册用户，后续可能添加Spring security框架来进一步巩固数据安全性，敬请期待*/
     /*注册成功会返回影响行数，用此来判断是否插入成功！*/
     public int userRegistration(User user);
-    /*书写一个注册时的附带方法，注册成功后，我们需要为用户在user_info中初始化表*/
-    public int userInfoInit();
+    /*用户登录：后续会结合shiro进行数据安全性维护*/
+    public User login(String userId);
 }

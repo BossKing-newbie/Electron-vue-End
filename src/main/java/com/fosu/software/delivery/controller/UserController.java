@@ -26,17 +26,22 @@ public class UserController {
         this.userService = userService;
     }
     /*测试案例使用*/
-    @RequestMapping("/find")
+  /*  @RequestMapping("/find")
     public List<User> findAll(){
         return userService.findAll();
-    }
+    }*/
     @GetMapping(value = "/{userId}")
     public Object exitUser(@PathVariable("userId")String userId){
         return userService.exitUser(userId);
     }
     @PostMapping(value = "/register")
     public Object userRegistration(User user){
-        System.out.println(user);
+        //System.out.println(user);
         return userService.userRegistration(user);
+    }
+    @PostMapping(value = "/login")
+    public Object userLogin(@RequestParam(value="userId") String userId,
+                            @RequestParam(value = "userPassword") String userPassword){
+        return userService.login(userId,userPassword);
     }
 }

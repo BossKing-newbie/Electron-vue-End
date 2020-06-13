@@ -29,6 +29,7 @@ public class ResultUtils {
     public static ResultData<Object> fail(Integer code, String msg) {
         result.setCode(code);
         result.setMsg(msg);
+        result.setData(null);
         return result;
     }
 }
