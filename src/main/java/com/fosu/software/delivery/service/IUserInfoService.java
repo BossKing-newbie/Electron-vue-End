@@ -12,4 +12,6 @@ import com.fosu.software.delivery.domain.UserInfo;
 public interface IUserInfoService {
     /*后端返回用户的个人信息*/
     public Object findUserInfo(String userId);
+    /*更新个人信息*/
+    public Object updateUserInfo(UserInfo userInfo);
 }

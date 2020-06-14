@@ -19,5 +19,5 @@ public interface UserInfoMapper {
     /*后端返回用户的个人信息*/
     public UserInfo findUserInfo(String userId);
     /*个人修改后的更新操作，更新成功会返回影响行数*/
-    public int updateUserInfo(String userId);
+    public int updateUserInfo(UserInfo userInfo);
 }

@@ -40,8 +40,8 @@ public class UserController {
         return userService.userRegistration(user);
     }
     @PostMapping(value = "/login")
-    public Object userLogin(@RequestParam(value="userId") String userId,
-                            @RequestParam(value = "userPassword") String userPassword){
+    public Object userLogin(@RequestParam(value="account") String userId,
+                            @RequestParam(value = "pass") String userPassword){
         return userService.login(userId,userPassword);
     }
 }

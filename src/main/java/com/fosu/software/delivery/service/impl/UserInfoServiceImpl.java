@@ -1,6 +1,7 @@
 package com.fosu.software.delivery.service.impl;
 
 import com.fosu.software.delivery.dao.UserInfoMapper;
+import com.fosu.software.delivery.domain.UserInfo;
 import com.fosu.software.delivery.resultFormat.ResultUtils;
 import com.fosu.software.delivery.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,19 @@ public class UserInfoServiceImpl implements IUserInfoService {
             e.printStackTrace();
             return ResultUtils.fail(400,"get请求发送出错");
         }
+    }
+
+    @Override
+    public Object updateUserInfo(UserInfo userInfo) {
+        int row = 0;
+        try{
+            row = userInfoMapper.updateUserInfo(userInfo);
+            if(row > 0) {
+                return ResultUtils.success();
+            }
+        }catch (Exception e){
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+        return null;
     }
 }

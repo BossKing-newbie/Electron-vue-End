@@ -1,5 +1,6 @@
 package com.fosu.software.delivery.controller;
 
+import com.fosu.software.delivery.domain.UserInfo;
 import com.fosu.software.delivery.qiniuyun.QiNiuYunUpload;
 import com.fosu.software.delivery.resultFormat.ResultUtils;
 import com.fosu.software.delivery.service.impl.UserInfoServiceImpl;
@@ -44,5 +45,10 @@ public class UserInfoController {
         String randomAlphanumeric= RandomStringUtils.randomAlphanumeric(5)+"-"+avatarName+"-"+file.getOriginalFilename();
         map.put("imageUrl",QiNiuYunUpload.updateFile(file,randomAlphanumeric));
         return ResultUtils.success(map);
+    }
+    /*用户信息更新接口*/
+    @PostMapping(value = "/update")
+    public Object updateUserInfo(UserInfo userInfo){
+        return userInfoService.updateUserInfo(userInfo);
     }
 }

@@ -9,4 +9,16 @@
 	<select id="findUserInfo" resultType="UserInfo" parameterType="String">
 		SELECT * FROM user_info WHERE user_id =#{userId}
 	</select>
+	<!--更新语句-->
+	<update id="updateUserInfo" parameterType="UserInfo">
+		update user_info
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userName != null">user_name=#{userName},</if>
+			<if test="userSex != null">user_sex=#{userSex},</if>
+			<if test="userAddress != null">user_address=#{userAddress},</if>
+			<if test="userAvatar != null">user_avatar=#{userAvatar},</if>
+			<if test="userProvince != null">user_province=#{userProvince},</if>
+		</trim>
+		where user_id=#{userId}
+	</update>
 </mapper>
