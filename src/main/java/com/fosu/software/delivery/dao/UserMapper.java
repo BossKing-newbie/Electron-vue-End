@@ -24,4 +24,10 @@ public interface UserMapper {
     public int userRegistration(User user);
     /*用户登录：后续会结合shiro进行数据安全性维护*/
     public User login(String userId);
+    /*update用户绑定的手机号*/
+    public int updateUserPhone(String userId,String userPhone);
+    /*修改手机号需要返回userId,userPhone的接口*/
+    public Map<String,String> checkUserPhone(String userId);
+    /*修改密码*/
+    public int updateUserPassword(String userId,String newPassword);
 }

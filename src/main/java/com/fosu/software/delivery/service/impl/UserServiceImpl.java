@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @BelongsProject: delivery
@@ -99,6 +100,39 @@ public class UserServiceImpl implements IUserService {
                 e.printStackTrace();
             }
             return ResultUtils.fail(400,"账户密码错误！");
+        }
+    }
+
+    @Override
+    public boolean updateUserPhone(String userId, String userPhone) {
+        int row = userMapper.updateUserPhone(userId, userPhone);
+        return row>0;
+    }
+
+    @Override
+    public Object checkUserPhone(String userId) {
+        Map<String,String> map=userMapper.checkUserPhone(userId);
+        StringBuilder stringBuilder = new StringBuilder(map.get("userPhone"));
+        map.put("userPhone",stringBuilder.replace(3,7,"****").toString());
+        return ResultUtils.success(map);
+    }
+
+    @Override
+    public Object updatePassword(String userId, String oldPassword, String newPassword) {
+        User user=userMapper.login(userId);
+        int code=0;
+        if(passwordEncoder().matches(oldPassword,user.getUserPassword())){
+            try{
+                code=userMapper.updateUserPassword(userId,passwordEncoder().encode(newPassword));
+                if(code>0)
+                    return ResultUtils.success();
+                else
+                    return ResultUtils.fail(400,"密码更新失败");
+            }catch (Exception e){
+                return ResultUtils.fail(400,"密码更新失败",e.getLocalizedMessage());
+            }
+        }else {
+            return ResultUtils.fail(500,"密码错误");
         }
     }
 }

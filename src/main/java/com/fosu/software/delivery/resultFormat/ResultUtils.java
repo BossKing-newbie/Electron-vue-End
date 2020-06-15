@@ -32,4 +32,10 @@ public class ResultUtils {
         result.setData(null);
         return result;
     }
+    public static ResultData<Object> fail(Integer code, String msg,Object object) {
+        result.setCode(code);
+        result.setMsg(msg);
+        result.setData(object);
+        return result;
+    }
 }

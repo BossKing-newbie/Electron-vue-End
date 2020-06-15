@@ -22,4 +22,10 @@ public interface IUserService {
     /*用户登录：将表单传输的用户密码和用户Id,首先对用户Id进行匹配，如果匹配成功，则再进行匹配密码
     * 如果匹配失败则直接返回错误信息*/
     public Object login(String userId,String userPassword);
+    /*update用户所在手机号*/
+    public boolean updateUserPhone(String userId,String userPhone);
+    /*查询用户手机号*/
+    public Object checkUserPhone(String userId);
+    /*修改密码*/
+    public Object updatePassword(String userId,String oldPassword,String newPassword);
 }
