@@ -20,7 +20,7 @@ import java.util.Map;
  * @Description: User类的控制类
  */
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/user")
 public class UserController {
     private UserServiceImpl userService;

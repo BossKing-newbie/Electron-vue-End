@@ -67,6 +67,8 @@ public class SmsZhenziUtils {
         HttpSession session = request.getSession();
         Map<String,String> map=new HashMap<>();
         /*将发送的验证码与session中的加盐md5码解码后进行匹配*/
+        System.out.println("session域:"+session.getAttribute("randomCode"));
+        System.out.println("发送的验证码:"+randomCode);
         if(session.getAttribute("randomCode") == null){
             map.put("code","400");
             map.put("msg","验证超时");
