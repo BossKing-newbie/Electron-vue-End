@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fosu.software.delivery.dao.OrderFormMapper">
+	<!--order_form_number	varchar
+    order_form_products_id	varchar
+    order_form_user_id	varchar
+    order_form_time	datetime
+    order_form_start_address	varchar
+    order_form_end_address	varchar
+    order_form_weight	double
+    order_form_money	double
+    order_form_status	varchar
+    order_form_way	varchar-->
+	<select id="selectOrderForm" resultMap="orderTable">
+		SELECT
+	order_form.order_form_number,
+	products.products_name,
+	order_form.order_form_user_id,
+	DATE_FORMAT(order_form.order_form_time,'%Y-%m-%d %H:%i:%s') order_form_time,
+	order_form.order_form_start_address,
+	order_form.order_form_end_address,
+	order_form.order_form_money,
+	order_form.order_form_way,
+	order_form.order_form_status
+FROM
+	order_form
+	INNER JOIN products ON products.products_id = order_form.order_form_products_id
+	WHERE order_form_status !='已完成'
+	</select>
+	<resultMap id="orderTable" type="java.util.Map">
+		<result column="order_form_number" property="orderFormNumber" jdbcType="VARCHAR"/>
+		<result column="products_name" property="productsName" jdbcType="VARCHAR"/>
+		<result column="order_form_user_id" property="orderFormUserId" jdbcType="VARCHAR"/>
+		<result column="order_form_time" property="orderFormTime" jdbcType="TIMESTAMP"/>
+		<result column="order_form_start_address" property="orderFormStartAddress" jdbcType="VARCHAR"/>
+		<result column="order_form_end_address" property="orderFormEndAddress" jdbcType="VARCHAR"/>
+		<result column="order_form_money" property="orderFormMoney" jdbcType="DOUBLE"/>
+		<result column="order_form_way" property="orderFormWay" jdbcType="DOUBLE"/>
+		<result column="order_form_status" property="orderFormStatus" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="getProducts" parameterType="String" resultType="Products">
+		SELECT * FROM products WHERE products_id = #{productsId}
+	</select>
+	<insert id="insertOrderForm" parameterType="OrderForm">
+		INSERT INTO order_form (order_form_number,order_form_products_id,
+		order_form_user_id,order_form_time,order_form_start_address,
+		order_form_end_address,order_form_weight,order_form_money,order_form_status,order_form_way)
+		VALUES (#{orderFormNumber},#{orderFormProductsId},#{orderFormUserId},#{orderFormTime},
+		#{orderFormStartAddress},#{orderFormEndAddress},#{orderFormWeight},#{orderFormMoney},
+		#{orderFormStatus},#{orderFormWay})
+	</insert>
+	<insert id="insertOrderInfo" parameterType="OrderInfo">
+		INSERT INTO order_info (order_form_number,order_sender,
+		order_sender_phone,order_recipient,order_recipient_phone)
+		VALUES (#{orderFormNumber},#{orderSender},#{orderSenderPhone},
+		#{orderRecipient},#{orderRecipientPhone})
+	</insert>
+	<insert id="insertReserveForm" parameterType="ReserveForm">
+		INSERT INTO reserve_form (reserve_id,reserve_time)
+		VALUES (#{reserveId},#{reserveTime})
+	</insert>
+</mapper>
