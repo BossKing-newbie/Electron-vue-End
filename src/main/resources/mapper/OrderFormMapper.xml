@@ -11,10 +11,8 @@
     order_form_weight	double
     order_form_money	double
     order_form_status	varchar
-    order_form_way	varchar-->
-	<select id="selectOrderForm" resultMap="orderTable">
-		SELECT
-	order_form.order_form_number,
+    order_form_way	varchar
+    order_form.order_form_number,
 	products.products_name,
 	order_form.order_form_user_id,
 	DATE_FORMAT(order_form.order_form_time,'%Y-%m-%d %H:%i:%s') order_form_time,
@@ -23,10 +21,19 @@
 	order_form.order_form_money,
 	order_form.order_form_way,
 	order_form.order_form_status
-FROM
-	order_form
+	INNER JOIN products ON products.products_id = order_form.order_form_products_id-->
+	<select id="selectOrderForm" resultMap="orderTable" parameterType="String">
+		SELECT order_form.order_form_number,
+	products.products_name,
+	order_form.order_form_user_id,
+	DATE_FORMAT(order_form.order_form_time,'%Y-%m-%d %H:%i:%s') order_form_time,
+	order_form.order_form_start_address,
+	order_form.order_form_end_address,
+	order_form.order_form_money,
+	order_form.order_form_way,
+	order_form.order_form_status FROM order_form
 	INNER JOIN products ON products.products_id = order_form.order_form_products_id
-	WHERE order_form_status !='已完成'
+		 WHERE order_form_status !='已签收' AND order_form.order_form_user_id = #{orderFormUserId}
 	</select>
 	<resultMap id="orderTable" type="java.util.Map">
 		<result column="order_form_number" property="orderFormNumber" jdbcType="VARCHAR"/>
@@ -60,4 +67,32 @@ FROM
 		INSERT INTO reserve_form (reserve_id,reserve_time)
 		VALUES (#{reserveId},#{reserveTime})
 	</insert>
+	<update id="cancelReserve" parameterType="String">
+		DELETE  FROM order_form WHERE order_form_number = #{orderFormNumber};
+		DELETE FROM reserve_form WHERE reserve_id = #{orderFormNumber};
+		DELETE FROM order_info WHERE order_form_number = #{orderFormNumber}
+	</update>
+	<select id="selectHistoryForm" resultMap="orderTable" parameterType="String">
+		SELECT order_form.order_form_number,
+	products.products_name,
+	order_form.order_form_user_id,
+	DATE_FORMAT(order_form.order_form_time,'%Y-%m-%d %H:%i:%s') order_form_time,
+	order_form.order_form_start_address,
+	order_form.order_form_end_address,
+	order_form.order_form_money,
+	order_form.order_form_way,
+	order_form.order_form_status FROM order_form
+	INNER JOIN products ON products.products_id = order_form.order_form_products_id
+		 WHERE order_form_status ='已签收' AND order_form.order_form_user_id = #{orderFormUserId}
+	</select>
+	<insert id="insertDeliveryInfo" parameterType="DeliveryInfo">
+		INSERT INTO delivery_info (order_form_number, order_delivery) VALUES(#{orderFormNumber},#{orderDelivery})
+	</insert>
+	<select id="deliveryInfo" parameterType="String" resultType="DeliveryInfo">
+		SELECT * FROM delivery_info WHERE order_form_number = #{orderFormNumber}
+	</select>
+	<!--确认收货-->
+	<update id="confirmDelivery" parameterType="String">
+		UPDATE order_form SET order_form_status = '已签收' WHERE order_form_number = #{orderFormNumber}
+	</update>
 </mapper>
