@@ -6,6 +6,7 @@ import com.fosu.software.delivery.service.impl.OrderFormServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,5 +52,29 @@ public class OrderFormController {
     @GetMapping("/confirm/{orderFormNumber}")
     public Object confirmDelivery(@PathVariable("orderFormNumber") String orderFormNumber){
         return orderFormService.confirmDelivery(orderFormNumber);
+    }
+    @GetMapping("/reserve")
+    public Object selectReserveForm(){
+        return orderFormService.selectReserveForm();
+    }
+    @PostMapping("/update")
+    public Object updateOrderForm(@RequestBody Map<String,Object> map) {
+        return orderFormService.updateOrderForm(map);
+    }
+    @GetMapping("/check")
+    public Object orderCheck(){
+        return orderFormService.orderCheck();
+    }
+    @GetMapping("/already")
+    public Object alreadyPackage() {
+        return orderFormService.alreadyPackage();
+    }
+    @GetMapping("/already/{num}")
+    public Object selectAlreadyPackage(@PathVariable("num") String num) {
+        return orderFormService.selectAlreadyPackage(num);
+    }
+    @PostMapping("/goBack/{num}")
+    public Object goBackOrder(@PathVariable("num") String orderFormNumber){
+        return orderFormService.goBackOrder(orderFormNumber);
     }
 }

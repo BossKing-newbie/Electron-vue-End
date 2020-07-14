@@ -70,7 +70,8 @@
 	<update id="cancelReserve" parameterType="String">
 		DELETE  FROM order_form WHERE order_form_number = #{orderFormNumber};
 		DELETE FROM reserve_form WHERE reserve_id = #{orderFormNumber};
-		DELETE FROM order_info WHERE order_form_number = #{orderFormNumber}
+		DELETE FROM order_info WHERE order_form_number = #{orderFormNumber};
+		DELETE FROM delivery_info WHERE order_form_number = #{orderFormNumber}
 	</update>
 	<select id="selectHistoryForm" resultMap="orderTable" parameterType="String">
 		SELECT order_form.order_form_number,
@@ -88,6 +89,10 @@
 	<insert id="insertDeliveryInfo" parameterType="DeliveryInfo">
 		INSERT INTO delivery_info (order_form_number, order_delivery) VALUES(#{orderFormNumber},#{orderDelivery})
 	</insert>
+	<!--delivery_info表的更新方法-->
+	<update id="updateDeliveryInfo" parameterType="DeliveryInfo">
+		UPDATE delivery_info SET delivery_info.order_delivery = #{orderDelivery} WHERE order_form_number = #{orderFormNumber}
+	</update>
 	<select id="deliveryInfo" parameterType="String" resultType="DeliveryInfo">
 		SELECT * FROM delivery_info WHERE order_form_number = #{orderFormNumber}
 	</select>
@@ -95,4 +100,101 @@
 	<update id="confirmDelivery" parameterType="String">
 		UPDATE order_form SET order_form_status = '已签收' WHERE order_form_number = #{orderFormNumber}
 	</update>
+	<select id="selectReserveForm" resultMap="reserveForm">
+		SELECT order_form.order_form_number,
+	products.products_weight,
+	products.products_addprice,
+	order_info.order_sender,
+	order_info.order_sender_phone,
+	order_form_money
+	FROM order_form
+	JOIN products ON products.products_id = order_form.order_form_products_id
+	JOIN order_info ON order_info.order_form_number = order_form.order_form_number
+		 WHERE order_form_status ='预约中'
+	</select>
+	<resultMap id="reserveForm" type="java.util.Map">
+		<result column="order_form_number" property="num" jdbcType="VARCHAR"/>
+		<result column="products_weight" property="productsWeight" jdbcType="DOUBLE"/>
+		<result column="products_addprice" property="productsAddPrice" jdbcType="DOUBLE"/>
+		<result column="order_sender" property="name" jdbcType="VARCHAR"/>
+		<result column="order_sender_phone" property="phone" jdbcType="VARCHAR"/>
+		<result column="order_form_money" property="price" jdbcType="DOUBLE"/>
+	</resultMap>
+	<!--更新方法，开单后重量填写update，价格update，状态变为已揽件-->
+	<update id="updateOrderForm" parameterMap="updateMap">
+		UPDATE order_form SET order_form_weight = #{weight}, order_form_money = #{sum},
+		order_form_status = #{status} WHERE order_form_number = #{num}
+	</update>
+	<parameterMap id="updateMap" type="java.util.Map">
+		<parameter property="weight" jdbcType="DOUBLE"/>
+		<parameter property="sum" jdbcType="DOUBLE"/>
+		<parameter property="status" jdbcType="VARCHAR"/>
+		<parameter property="num" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<!--返回物流状态信息查询-->
+	<select id="orderCheck" resultMap="orderCheckMap">
+		SELECT order_form.order_form_number,
+		order_form_user_id,order_sender,
+		order_sender_phone,order_form_start_address,
+		order_recipient,order_recipient_phone,
+		order_form_end_address,order_form_time,
+		products_name,order_form_status FROM order_form
+		JOIN order_info oi on order_form.order_form_number = oi.order_form_number
+		JOIN products ON order_form_products_id = products_id
+	</select>
+	<resultMap id="orderCheckMap" type="java.util.Map">
+		<result column="order_form_number" property="num" jdbcType="VARCHAR"/>
+		<result column="order_form_user_id" property="name" jdbcType="VARCHAR"/>
+		<result column="order_sender" property="sname" jdbcType="VARCHAR"/>
+		<result column="order_sender_phone" property="sphone" jdbcType="VARCHAR"/>
+		<result column="order_form_start_address" property="saddress" jdbcType="VARCHAR"/>
+		<result column="order_recipient" property="rname" jdbcType="VARCHAR"/>
+		<result column="order_recipient_phone" property="rphone" jdbcType="VARCHAR"/>
+		<result column="order_form_end_address" property="raddress" jdbcType="VARCHAR"/>
+		<result column="order_form_time" property="time" jdbcType="TIMESTAMP"/>
+		<result column="products_name" property="product" jdbcType="VARCHAR"/>
+		<result column="order_form_status" property="status" jdbcType="VARCHAR"/>
+	</resultMap>
+	<!--返回已揽件的订单-->
+	<select id="alreadyPackage" resultType="String">
+		SELECT order_form_number FROM order_form WHERE order_form_status = '已揽件'
+	</select>
+	<select id="selectAlreadyPackage" parameterType="String" resultMap="alreadyPackageMap">
+		SELECT order_form.order_form_number,oi.order_sender,oi.order_sender_phone,order_form_start_address,
+		oi.order_recipient,oi.order_recipient_phone,order_form_end_address,order_form_weight FROM order_form
+		JOIN order_info oi on order_form.order_form_number = oi.order_form_number
+		WHERE order_form.order_form_number = #{orderFormNumber}
+	</select>
+	<resultMap id="alreadyPackageMap" type="java.util.Map">
+		<result column="order_form_number" property="ordernum" jdbcType="VARCHAR"/>
+		<result column="order_sender" property="sname" jdbcType="VARCHAR"/>
+		<result column="order_sender_phone" property="sphone" jdbcType="VARCHAR"/>
+		<result column="order_form_start_address" property="saddress" jdbcType="VARCHAR"/>
+		<result column="order_recipient" property="rname" jdbcType="VARCHAR"/>
+		<result column="order_recipient_phone" property="rphone" jdbcType="VARCHAR"/>
+		<result column="order_form_end_address" property="raddress" jdbcType="VARCHAR"/>
+		<result column="order_form_weight" property="weight" jdbcType="DOUBLE"/>
+	</resultMap>
+	<!--订单打回操作-->
+	<select id="goBackOrder" parameterType="String" resultMap="goBackOrderMap">
+		SELECT order_form.order_form_weight,order_form.order_form_money,products.products_weight,products.products_addprice
+FROM order_form JOIN products ON order_form_products_id = products_id WHERE order_form_number = #{orderFormNumber}
+	</select>
+	<resultMap id="goBackOrderMap" type="java.util.Map">
+		<result column="order_form_weight" property="weight" jdbcType="DOUBLE"/>
+		<result column="order_form_money" property="money" jdbcType="DOUBLE"/>
+		<result column="products_weight" property="initWeight" jdbcType="DOUBLE"/>
+		<result column="products_addprice" property="addPrice" jdbcType="DOUBLE"/>
+	</resultMap>
+	<!--订单通过写入仓库表-->
+	<insert id="insertWarehouse" parameterMap="insertWarehouseMap">
+		INSERT INTO warehouse(warehouse_num, order_form_number, warehousing_personnel, outbound_staff)
+		VALUES (#{warehouseNum},#{orderFormNumber},#{warehousingPersonnel},#{outboundStaff})
+	</insert>
+	<parameterMap id="insertWarehouseMap" type="java.util.Map">
+		<parameter property="warehouseNum" jdbcType="VARCHAR"/>
+		<parameter property="orderFormNumber" jdbcType="VARCHAR"/>
+		<parameter property="warehousingPersonnel" jdbcType="VARCHAR"/>
+		<parameter property="outboundStaff" jdbcType="VARCHAR"/>
+	</parameterMap>
 </mapper>

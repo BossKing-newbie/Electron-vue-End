@@ -183,4 +183,122 @@ public class OrderFormServiceImpl implements IOrderFormService {
             return ResultUtils.fail(400,e.getLocalizedMessage());
         }
     }
+
+    @Override
+    public Object selectReserveForm() {
+        try {
+            List<Map> mapList = orderFormMapper.selectReserveForm();
+            for (Map map : mapList) {
+                map.put("sum",map.get("price"));
+                map.put("weight",0);
+            }
+            return ResultUtils.success(mapList);
+        }catch (Exception e){
+            return ResultUtils.fail(500,e.getLocalizedMessage());
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public Object updateOrderForm(Map<String, Object> map) {
+        try{
+            int code = orderFormMapper.updateOrderForm(map);
+            // delivery_info表
+            String orderFormNumber = (String) map.get("num");
+            DeliveryInfo deliveryInfo = orderFormMapper.deliveryInfo(orderFormNumber);
+            // 反序列对象数组
+            List<DeliveryTimestamp> deliveryTimestampList = new ObjectMapper().readValue(deliveryInfo.getOrderDelivery(),
+                    new TypeReference<List<DeliveryTimestamp>>(){});
+            // 获取当前时间
+            Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+            DeliveryTimestamp deliveryTimestamp = new DeliveryTimestamp();
+            deliveryTimestamp.setContent("已揽件");
+            deliveryTimestamp.setTimestamp(timestamp);
+            deliveryTimestampList.add(deliveryTimestamp);
+            deliveryInfo.setOrderDelivery(new ObjectMapper().writeValueAsString(deliveryTimestampList));
+            // 更新deliveryInfo表,即更新物流信息
+            code += orderFormMapper.updateDeliveryInfo(deliveryInfo);
+            if (code > 0) {
+                return ResultUtils.success();
+            }else {
+                return ResultUtils.fail(400,"更新失败");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Object orderCheck() {
+        try{
+            List<Map> map = orderFormMapper.orderCheck();
+            return ResultUtils.success(map);
+        }catch (Exception e){
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Object alreadyPackage() {
+        Map<String,Object> map = new HashMap<>();
+        try {
+            List<String> list = orderFormMapper.alreadyPackage();
+            map.put("wareHouseNum",RandomStringUtils.randomAlphanumeric(10));
+            map.put("list",list);
+            return map;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Object selectAlreadyPackage(String orderFormNumber) {
+        try{
+            List<Map> mapList = orderFormMapper.selectAlreadyPackage(orderFormNumber);
+            return ResultUtils.success(mapList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Object goBackOrder(String orderFormNumber) {
+        try{
+            Map<String,Object> orderMap = orderFormMapper.goBackOrder(orderFormNumber);
+            Double weight = (Double) orderMap.get("weight");
+            Double money = (Double) orderMap.get("money");
+            Double initWeight = (Double) orderMap.get("initWeight");
+            Double addPrice = (Double) orderMap.get("addPrice");
+            money = money - (weight-initWeight) * addPrice;
+            Map<String,Object> map = new HashMap<>();
+            map.put("weight",0.0);
+            map.put("sum",money);
+            map.put("status","预约中");
+            map.put("num", orderFormNumber);
+            int code = orderFormMapper.updateOrderForm(map);
+            if(code > 0) {
+                return ResultUtils.success();
+            } else {
+                return ResultUtils.fail(400,"插入失败");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public Object insertWarehouse(Map<String, Object> map) {
+        try{
+            int code = orderFormMapper.insertWarehouse(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+        return null;
+    }
 }

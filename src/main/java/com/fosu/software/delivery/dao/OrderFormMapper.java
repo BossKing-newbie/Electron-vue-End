@@ -29,10 +29,26 @@ public interface OrderFormMapper {
     public int insertReserveForm(ReserveForm reserveForm);
     // 插入delivery_info表
     public int insertDeliveryInfo(DeliveryInfo deliveryInfo);
+    // 更新delivery_info表
+    public int updateDeliveryInfo(DeliveryInfo deliveryInfo);
     // 取消预约
     public int cancelReserve(String orderFormNumber);
     // 返回物流信息
     public DeliveryInfo deliveryInfo(String orderFormNumber);
     // 确认收货
     public int confirmDelivery(String orderFormNumber);
+    // 返回预约中的订单
+    public List<Map> selectReserveForm();
+    // 更新方法，开单后重量填写update，价格update，状态变为已揽件
+    public int updateOrderForm(Map<String,Object> map);
+    // 返回物流状态查询信息
+    public List<Map> orderCheck();
+    // 返回已揽件的订单
+    public List<String> alreadyPackage();
+    // 返回已揽件订单的详细信息
+    public List<Map> selectAlreadyPackage(String orderFormNumber);
+    // 订单打回操作
+    public Map<String,Object> goBackOrder(String orderFormNumber);
+    // 订单通过操作
+    public int insertWarehouse(Map<String,Object> map);
 }
