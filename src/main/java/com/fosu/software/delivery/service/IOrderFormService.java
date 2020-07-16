@@ -41,6 +41,14 @@ public interface IOrderFormService {
     public Object selectAlreadyPackage(String orderFormNumber);
     // 订单打回操作
     public Object goBackOrder(String orderFormNumber);
-    // 订单通过操作
+    // 订单通过写入仓库表，物流状态改为已入库，物流信息更新
     public Object insertWarehouse(Map<String,Object> map);
+    // 返回入库信息
+    public Object selectWarehouse();
+    // 立即出单操作,业务逻辑：需要修改仓库表的出库人员，更新物流信息，更新物流状态为已发货
+    public Object putOrder(Map<String,Object> map);
+    // 立即出单下框数据回显
+    public List<Map> selectedWarehouse();
+    // 出库信息显示
+    public Object outputWarehouse();
 }

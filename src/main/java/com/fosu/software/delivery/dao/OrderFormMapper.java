@@ -51,4 +51,12 @@ public interface OrderFormMapper {
     public Map<String,Object> goBackOrder(String orderFormNumber);
     // 订单通过操作
     public int insertWarehouse(Map<String,Object> map);
+    // 返回入库信息
+    public List<Map> selectWarehouse();
+    // 立即出单下框数据回显
+    public List<Map> selectedWarehouse();
+    // 立即出单
+    public int updateWarehouse(Map<String,Object> map);
+    // 出库信息显示
+    public List<Map> outputWarehouse();
 }

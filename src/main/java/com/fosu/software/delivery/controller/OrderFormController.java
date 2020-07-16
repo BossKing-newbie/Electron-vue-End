@@ -77,4 +77,25 @@ public class OrderFormController {
     public Object goBackOrder(@PathVariable("num") String orderFormNumber){
         return orderFormService.goBackOrder(orderFormNumber);
     }
+    @PostMapping("/warehouse")
+    public Object insertWarehouse(@RequestBody Map<String,Object> map){
+        return orderFormService.insertWarehouse(map);
+    }
+    @GetMapping("/warehousing")
+    public Object warehousing(){
+        return orderFormService.selectWarehouse();
+    }
+    @PostMapping("/output")
+    public Object putOrder(@RequestBody Map<String,Object> map){
+        return orderFormService.putOrder(map);
+    }
+    @GetMapping("/selectedOutput")
+    public List<Map> selectedWarehouse(){
+        return orderFormService.selectedWarehouse();
+    }
+    // 出库信息显示
+    @GetMapping("/outputWarehouse")
+    public Object outputWarehouse(){
+        return orderFormService.outputWarehouse();
+    }
 }

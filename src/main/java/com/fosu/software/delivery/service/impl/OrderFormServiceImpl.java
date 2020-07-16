@@ -294,11 +294,105 @@ public class OrderFormServiceImpl implements IOrderFormService {
     @Override
     public Object insertWarehouse(Map<String, Object> map) {
         try{
+            Map<String,Object> orderMap = orderFormMapper.goBackOrder((String) map.get("orderFormNumber"));
+            Map<String,Object> updateMap = new HashMap<>();
+            // 铺垫后续map
+            updateMap.put("weight",orderMap.get("weight"));
+            updateMap.put("sum",orderMap.get("money"));
+            updateMap.put("num",map.get("orderFormNumber"));
+            updateMap.put("status","已入库");
+            // 插入仓库表
             int code = orderFormMapper.insertWarehouse(map);
+            // 更新物流状态
+            code += orderFormMapper.updateOrderForm(updateMap);
+            // 物流信息更新为已入库
+            // delivery_info表
+            String orderFormNumber = (String) map.get("orderFormNumber");
+            DeliveryInfo deliveryInfo = orderFormMapper.deliveryInfo(orderFormNumber);
+            // 反序列对象数组
+            List<DeliveryTimestamp> deliveryTimestampList = new ObjectMapper().readValue(deliveryInfo.getOrderDelivery(),
+                    new TypeReference<List<DeliveryTimestamp>>(){});
+            // 获取当前时间
+            Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+            DeliveryTimestamp deliveryTimestamp = new DeliveryTimestamp();
+            deliveryTimestamp.setContent("已入库");
+            deliveryTimestamp.setTimestamp(timestamp);
+            deliveryTimestampList.add(deliveryTimestamp);
+            deliveryInfo.setOrderDelivery(new ObjectMapper().writeValueAsString(deliveryTimestampList));
+            // 更新deliveryInfo表,即更新物流信息
+            code += orderFormMapper.updateDeliveryInfo(deliveryInfo);
+            if(code == 3){
+                return ResultUtils.success();
+            }else {
+                return ResultUtils.fail(400,"入库失败");
+            }
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtils.fail(400,e.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public Object selectWarehouse() {
+        try{
+            return ResultUtils.success(orderFormMapper.selectWarehouse());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtils.fail(400,e.getLocalizedMessage());
+        }
+    }
+    // 立即出单操作,业务逻辑：需要修改仓库表的出库人员，更新物流信息，更新物流状态为已发货
+    @Override
+    public Object putOrder(Map<String,Object> map) {
+        try{
+            // 修改仓库表的出库人员
+            int code = orderFormMapper.updateWarehouse(map);
+            Map<String,Object> orderMap = orderFormMapper.goBackOrder((String) map.get("orderFormNumber"));
+            Map<String,Object> updateMap = new HashMap<>();
+            // 铺垫后续map
+            updateMap.put("weight",orderMap.get("weight"));
+            updateMap.put("sum",orderMap.get("money"));
+            updateMap.put("num",map.get("orderFormNumber"));
+            updateMap.put("status","已发货");
+            // 更新物流状态为已发货
+            code += orderFormMapper.updateOrderForm(updateMap);
+            // delivery_info表
+            String orderFormNumber = (String) map.get("orderFormNumber");
+            DeliveryInfo deliveryInfo = orderFormMapper.deliveryInfo(orderFormNumber);
+            // 反序列对象数组
+            List<DeliveryTimestamp> deliveryTimestampList = new ObjectMapper().readValue(deliveryInfo.getOrderDelivery(),
+                    new TypeReference<List<DeliveryTimestamp>>(){});
+            // 获取当前时间
+            Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+            DeliveryTimestamp deliveryTimestamp = new DeliveryTimestamp();
+            deliveryTimestamp.setContent("已发货");
+            deliveryTimestamp.setTimestamp(timestamp);
+            deliveryTimestampList.add(deliveryTimestamp);
+            deliveryInfo.setOrderDelivery(new ObjectMapper().writeValueAsString(deliveryTimestampList));
+            // 更新deliveryInfo表,即更新物流信息
+            code += orderFormMapper.updateDeliveryInfo(deliveryInfo);
+            if(code == 3){
+                return ResultUtils.success();
+            }else {
+                return ResultUtils.fail(400,"发货失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    @Override
+    public List<Map> selectedWarehouse() {
+        return orderFormMapper.selectedWarehouse();
+    }
+
+    @Override
+    public Object outputWarehouse() {
+        try{
+            return ResultUtils.success(orderFormMapper.outputWarehouse());
+        }catch (Exception e){
+            return ResultUtils.fail(400,"查询失败");
+        }
     }
 }

@@ -186,7 +186,7 @@ FROM order_form JOIN products ON order_form_products_id = products_id WHERE orde
 		<result column="products_weight" property="initWeight" jdbcType="DOUBLE"/>
 		<result column="products_addprice" property="addPrice" jdbcType="DOUBLE"/>
 	</resultMap>
-	<!--订单通过写入仓库表-->
+	<!--订单通过写入仓库表，物流状态改为已入库，物流信息更新-->
 	<insert id="insertWarehouse" parameterMap="insertWarehouseMap">
 		INSERT INTO warehouse(warehouse_num, order_form_number, warehousing_personnel, outbound_staff)
 		VALUES (#{warehouseNum},#{orderFormNumber},#{warehousingPersonnel},#{outboundStaff})
@@ -197,4 +197,74 @@ FROM order_form JOIN products ON order_form_products_id = products_id WHERE orde
 		<parameter property="warehousingPersonnel" jdbcType="VARCHAR"/>
 		<parameter property="outboundStaff" jdbcType="VARCHAR"/>
 	</parameterMap>
+	<!--返回入库信息-->
+	<select id="selectWarehouse" resultMap="selectWarehouseMap">
+		SELECT warehouse_num,warehouse.order_form_number,oi.order_sender,oi.order_sender_phone,
+		order_form_start_address,oi.order_recipient,oi.order_recipient_phone,order_form_end_address,
+		products_name,warehousing_personnel FROM warehouse
+		JOIN order_form o on warehouse.order_form_number = o.order_form_number
+		JOIN order_info oi on o.order_form_number = oi.order_form_number
+		JOIN products on order_form_products_id = products_id
+	</select>
+	<resultMap id="selectWarehouseMap" type="java.util.Map">
+		<result column="warehouse_num" property="warehousenum" jdbcType="VARCHAR"/>
+		<result column="order_form_number" property="ordernum" jdbcType="VARCHAR"/>
+		<result column="order_sender" property="sname" jdbcType="VARCHAR"/>
+		<result column="order_sender_phone" property="sphone" jdbcType="VARCHAR"/>
+		<result column="order_form_start_address" property="saddress" jdbcType="VARCHAR"/>
+		<result column="order_recipient" property="rname" jdbcType="VARCHAR"/>
+		<result column="order_recipient_phone" property="rphone" jdbcType="VARCHAR"/>
+		<result column="order_form_end_address" property="raddress" jdbcType="VARCHAR"/>
+		<result column="products_name" property="product" jdbcType="VARCHAR"/>
+		<result column="warehousing_personnel" property="pname" jdbcType="VARCHAR"/>
+	</resultMap>
+	<!--立即出单-->
+	<update id="updateWarehouse" parameterMap="updateWarehouseMap">
+		UPDATE warehouse SET outbound_staff =#{outboundStaff} WHERE order_form_number =#{orderFormNumber}
+	</update>
+	<parameterMap id="updateWarehouseMap" type="java.util.Map">
+		<parameter property="outboundStaff" jdbcType="VARCHAR"/>
+		<parameter property="orderFormNumber" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<!--// 立即出单下框数据回显-->
+	<select id="selectedWarehouse" resultMap="selectWarehouseMap">
+		SELECT warehouse_num,warehouse.order_form_number,oi.order_sender,oi.order_sender_phone,
+		order_form_start_address,oi.order_recipient,oi.order_recipient_phone,order_form_end_address,
+		products_name,warehousing_personnel FROM warehouse
+		JOIN order_form o on warehouse.order_form_number = o.order_form_number
+		JOIN order_info oi on o.order_form_number = oi.order_form_number
+		JOIN products on order_form_products_id = products_id
+		WHERE outbound_staff = ''
+	</select>
+	<!--// 出库信息显示-->
+	<!--ordernum: '12345678',
+        sname: '郑嘉雯',
+        sphone: '13168597846',
+        saddress: '广东省佛山市顺德区大良街道环市东路18明洋楼D座508',
+        rname: '纪傻逼',
+        rphone: '13078163530',
+        raddress: '上海市普陀区金沙江路 1518 弄',
+        product: 'same_day',
+        status: '已发货',
+        oname: '任紫薇'-->
+	<select id="outputWarehouse" resultMap="outputWarehouseMap">
+		SELECT warehouse.order_form_number,oi.order_sender,oi.order_sender_phone,
+		order_form_start_address,oi.order_recipient,oi.order_recipient_phone,order_form_end_address,
+		products_name,outbound_staff,order_form_status FROM warehouse
+		JOIN order_form o on warehouse.order_form_number = o.order_form_number
+		JOIN order_info oi on o.order_form_number = oi.order_form_number
+		JOIN products on order_form_products_id = products_id
+	</select>
+	<resultMap id="outputWarehouseMap" type="java.util.Map">
+		<result column="order_form_number" property="ordernum" jdbcType="VARCHAR"/>
+		<result column="order_sender" property="sname" jdbcType="VARCHAR"/>
+		<result column="order_sender_phone" property="sphone" jdbcType="VARCHAR"/>
+		<result column="order_form_start_address" property="saddress" jdbcType="VARCHAR"/>
+		<result column="order_recipient" property="rname" jdbcType="VARCHAR"/>
+		<result column="order_recipient_phone" property="rphone" jdbcType="VARCHAR"/>
+		<result column="order_form_end_address" property="raddress" jdbcType="VARCHAR"/>
+		<result column="products_name" property="product" jdbcType="VARCHAR"/>
+		<result column="outbound_staff" property="oname" jdbcType="VARCHAR"/>
+		<result column="order_form_status" property="status" jdbcType="VARCHAR"/>
+	</resultMap>
 </mapper>

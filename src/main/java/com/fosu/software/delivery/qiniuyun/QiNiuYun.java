@@ -9,11 +9,11 @@ package com.fosu.software.delivery.qiniuyun;
  */
 public class QiNiuYun {
     //    七牛AK
-    public static final String accessKey = "NuWF68DNLIa1xpBTdYZXCw6ut8ESK3f008y_a9j-";
+    public static final String accessKey = "XGI99-tC3JWMUmDykstbetFxGMsEqOZu9qdTcIiU";
     //    七牛SK
-    public static final String secretKey = "UC8jCnOovZPRY5bN5wPdyh2W2WjlgCai9yRUXCG0";
+    public static final String secretKey = "5xE3bU4eFWPrNCmsa3uuWREgI1UPI2efU3PoywZN";
     //    七牛存储空间名
-    public static final String bucket = "bossking-delivery";
+    public static final String bucket = "seven-delivery";
     //    七牛默认域名
-    public static final String domain = "http://qbskwf43q.bkt.clouddn.com";
+    public static final String domain = "http://qdjfwnhtg.bkt.clouddn.com";
 }
