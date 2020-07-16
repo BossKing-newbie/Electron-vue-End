@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 08/07/2020 12:17:56
+ Date: 16/07/2020 23:43:37
 */
 
 SET NAMES utf8mb4;
@@ -47,9 +47,31 @@ CREATE TABLE `delivery_info`  (
 -- ----------------------------
 -- Records of delivery_info
 -- ----------------------------
-INSERT INTO `delivery_info` VALUES ('IsGxDOHh', '[{\"content\": \"成功预约\", \"timestamp\": \"2020-07-08 10:11:07\"}]');
-INSERT INTO `delivery_info` VALUES ('Z95BpOjR', '[{\"content\": \"成功预约\", \"timestamp\": \"2020-07-07 22:53:00\"}]');
-INSERT INTO `delivery_info` VALUES ('bijtd84T', '[{\"content\": \"成功预约\", \"timestamp\": \"2020-07-08 00:32:33\"}]');
+INSERT INTO `delivery_info` VALUES ('12aFmqjM', '[{\"content\": \"成功预约\", \"timestamp\": \"2020-07-16 11:09:36\"}, {\"content\": \"已揽件\", \"timestamp\": \"2020-07-16 11:09:56\"}, {\"content\": \"已入库\", \"timestamp\": \"2020-07-16 11:10:22\"}, {\"content\": \"已发货\", \"timestamp\": \"2020-07-16 11:10:36\"}]');
+
+-- ----------------------------
+-- Table structure for employee
+-- ----------------------------
+DROP TABLE IF EXISTS `employee`;
+CREATE TABLE `employee`  (
+  `job_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '工号',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '员工姓名',
+  `department` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '部门',
+  `position` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '职位',
+  `image_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '头像',
+  PRIMARY KEY (`job_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of employee
+-- ----------------------------
+INSERT INTO `employee` VALUES ('002', '纪老师', '财务部', '技术指导', 'http://qdjfwnhtg.bkt.clouddn.com/Qnso0--curry2.jpeg');
+INSERT INTO `employee` VALUES ('006', '任紫薇', '人事部', '经理', 'https://s1.ax1x.com/2020/07/10/UKsXFg.png');
+INSERT INTO `employee` VALUES ('009', '纪佳金', '仓库管理部', '主管', 'https://s1.ax1x.com/2020/07/10/UKsqw8.png');
+INSERT INTO `employee` VALUES ('020', '郑嘉雯', '财务部', '经理', 'https://s1.ax1x.com/2020/07/10/UKsjYQ.png');
+INSERT INTO `employee` VALUES ('021', '官耀威', '资源采购部', '主管', 'https://s1.ax1x.com/2020/07/10/UKsLTS.png');
+INSERT INTO `employee` VALUES ('023', '黄昕', '销售部', '经理', 'https://s1.ax1x.com/2020/07/10/UKsvWj.png');
+INSERT INTO `employee` VALUES ('055', '郑老师', '财务部', '技术指导', 'http://qdjfwnhtg.bkt.clouddn.com/6zRoU-055-微信图片_20200306094721.jpg');
 
 -- ----------------------------
 -- Table structure for order_form
@@ -75,9 +97,7 @@ CREATE TABLE `order_form`  (
 -- ----------------------------
 -- Records of order_form
 -- ----------------------------
-INSERT INTO `order_form` VALUES ('bijtd84T', 'same_day', '724574109', '2020-07-08 00:32:34', '广东省广州市荔湾区荔湾大厦', '广东省广州市海珠区海珠街道', 0, 18, '预约中', '未付款');
-INSERT INTO `order_form` VALUES ('IsGxDOHh', 'same_day', 'seven_King', '2020-07-08 10:11:07', '广东省广州市荔湾区荔湾大厦', '广东省佛山市顺德区大良街道', 0, 20, '预约中', '未付款');
-INSERT INTO `order_form` VALUES ('Z95BpOjR', 'next_day', '724574109', '2020-07-07 22:53:01', '广东省汕头市龙湖区陈厝合永和街', '广东省广州市荔湾区荔湾广场', 0, 14, '已签收', '未付款');
+INSERT INTO `order_form` VALUES ('12aFmqjM', 'same_day', '724574109', '2020-07-16 11:09:37', '广东省汕头市龙湖区陈厝合永和街金和九巷十一号', '广东省佛山市顺德区大良街道锦岩社区', 1, 22, '已发货', '未付款');
 
 -- ----------------------------
 -- Table structure for order_info
@@ -96,9 +116,7 @@ CREATE TABLE `order_info`  (
 -- ----------------------------
 -- Records of order_info
 -- ----------------------------
-INSERT INTO `order_info` VALUES ('IsGxDOHh', '郑嘉雯', '15816633018', '纪佳金', '13078163530');
-INSERT INTO `order_info` VALUES ('Z95BpOjR', '纪佳金', '15816633018', '郑嘉雯', '13078163530');
-INSERT INTO `order_info` VALUES ('bijtd84T', '纪佳金', '13168597846', '郑嘉雯', '13078163530');
+INSERT INTO `order_info` VALUES ('12aFmqjM', '纪佳金', '13078163530', '郑嘉雯', '13078163530');
 
 -- ----------------------------
 -- Table structure for products
@@ -133,9 +151,7 @@ CREATE TABLE `reserve_form`  (
 -- ----------------------------
 -- Records of reserve_form
 -- ----------------------------
-INSERT INTO `reserve_form` VALUES ('IsGxDOHh', '2020-07-08 13:00~14:00');
-INSERT INTO `reserve_form` VALUES ('Z95BpOjR', '2020-07-08 9:00~10:00');
-INSERT INTO `reserve_form` VALUES ('bijtd84T', '2020-07-08 10:00~11:00');
+INSERT INTO `reserve_form` VALUES ('12aFmqjM', '2020-07-16 13:00~14:00');
 
 -- ----------------------------
 -- Table structure for user
@@ -155,6 +171,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 INSERT INTO `user` VALUES (0x373234353734313039, '$2a$10$CWls59VhaYjJzNUWsIacd.z6rPfcXRUDFUxOvTqVCSD1pcj/tG5wW', '13078163530', '普通会员', 0);
 INSERT INTO `user` VALUES (0x626F73734B696E67, '$2a$10$rmOYL873gDabjK4qGWHlluFR84081CkB1U0XnfzMSVa6wAkw6u32e', '13078163530', '普通会员', 0);
+INSERT INTO `user` VALUES (0x6875616E6778696E, '$2a$10$PaGcw9Q.jQnNuM4Q5Xf5NOr1bKV5OlXi9hIswaqTm9aejdtDscPzi', '18296762979', '普通会员', 0);
 INSERT INTO `user` VALUES (0x736576656E4B696E67, '$2a$10$UItPT0nKwQcG..zgrPt4cuV.xkajM/sv8RhwRHs3.CwKJp8fZC1nC', '13078163530', '普通会员', 0);
 INSERT INTO `user` VALUES (0x736576656E5F4B696E67, '$2a$10$VMR1jVyk32lkz6QBaSISxOhg5knVgKpCE92V8diCKVguTEuUmhUTG', '15816633018', '普通会员', 0);
 
@@ -176,9 +193,27 @@ CREATE TABLE `user_info`  (
 -- ----------------------------
 -- Records of user_info
 -- ----------------------------
-INSERT INTO `user_info` VALUES ('724574109', '大佬湿', 'man', '广东省-汕头市-龙湖区/陈厝合永和街金和九巷', 'http://qbskwf43q.bkt.clouddn.com/t2uPW-20170060309-79973244496460857.jpg', '440000-440500-440507');
+INSERT INTO `user_info` VALUES ('724574109', '大佬湿', 'man', '广东省-汕头市-龙湖区/陈厝合永和街金和九巷', 'http://qdjfwnhtg.bkt.clouddn.com/aaTBq-20170060309-curry.jpg', '440000-440500-440507');
 INSERT INTO `user_info` VALUES ('bossKing', '大佬金', 'man', '广东省-佛山市-禅城区/佛山科学技术学院江湾一路18号', 'http://qbskwf43q.bkt.clouddn.com/pKDZB-20170060309-微信图片_20200317104521.jpg', '440000-440600-440604');
-INSERT INTO `user_info` VALUES ('sevenKing', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `user_info` VALUES ('huangxin', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `user_info` VALUES ('sevenKing', '郑嘉雯', 'woman', '北京市-市辖区-东城区/东城大道', 'http://qdjfwnhtg.bkt.clouddn.com/qcG4D-20170060309-微信图片_20200306094721.jpg', '110000-110100-110101');
 INSERT INTO `user_info` VALUES ('seven_King', '郑嘉雯', 'woman', '广东省-汕头市-龙湖区/陈厝合永和街金和九巷十一号', 'http://qbskwf43q.bkt.clouddn.com/EuQqJ-20170060309-微信图片_20200306094721.jpg', '440000-440500-440507');
+
+-- ----------------------------
+-- Table structure for warehouse
+-- ----------------------------
+DROP TABLE IF EXISTS `warehouse`;
+CREATE TABLE `warehouse`  (
+  `warehouse_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '仓库流水单号',
+  `order_form_number` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '订单号',
+  `warehousing_personnel` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '入库人员',
+  `outbound_staff` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '出库人员',
+  PRIMARY KEY (`warehouse_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of warehouse
+-- ----------------------------
+INSERT INTO `warehouse` VALUES ('gN4MYagI47', '12aFmqjM', '郑嘉雯', '黄昕');
 
 SET FOREIGN_KEY_CHECKS = 1;
